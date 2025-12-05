@@ -1,10 +1,22 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using GameShoppingMvcUI.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameShoppingMvcUI.Data
+namespace BookShoppingCartMvcUI.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext : IdentityDbContext
     {
-    }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
 
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Game> Books { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<CartDetail> CartDetails { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
+    }
 }
