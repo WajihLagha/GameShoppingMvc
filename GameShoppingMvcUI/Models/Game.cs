@@ -12,8 +12,13 @@ namespace GameShoppingMvcUI.Models
         [MaxLength(45)]
         public string? GameName { get; set; }
         [Required]
+        public double Price { get; set; }
+        public string? Image { get; set; }
+        [Required]
         public int GenreId { get; set; }
         public Genre? Genre { get; set; }
+        public List<CartDetail>? CartDetails { get; set; }
+        public List<OrderDetail>? OrderDetails { get; set; }
 
     }
 }
