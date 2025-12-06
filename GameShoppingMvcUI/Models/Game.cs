@@ -13,6 +13,8 @@ namespace GameShoppingMvcUI.Models
         public string? GameName { get; set; }
         [Required]
         public double Price { get; set; }
+        [Required]
+        public string? Publisher { get; set; }
         public string? Image { get; set; }
         [Required]
         public int GenreId { get; set; }
