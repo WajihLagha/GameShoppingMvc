@@ -14,7 +14,9 @@ namespace GameShoppingMvcUI.Models
         [Required]
         public double Price { get; set; }
         [Required]
+        [MaxLength(45)]
         public string? Publisher { get; set; }
+        public int YearOut { get; set; }
         public string? Image { get; set; }
         [Required]
         public int GenreId { get; set; }
