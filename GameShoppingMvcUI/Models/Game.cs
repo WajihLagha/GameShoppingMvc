@@ -23,6 +23,8 @@ namespace GameShoppingMvcUI.Models
         public Genre? Genre { get; set; }
         public List<CartDetail>? CartDetails { get; set; }
         public List<OrderDetail>? OrderDetails { get; set; }
+        [NotMapped]
+        public string? GenreName { get; set; }
 
     }
 }

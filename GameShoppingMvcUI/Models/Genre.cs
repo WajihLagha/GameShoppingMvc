@@ -6,7 +6,7 @@ namespace GameShoppingMvcUI.Models
     [Table("Genre")]
     public class Genre
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(45)]
