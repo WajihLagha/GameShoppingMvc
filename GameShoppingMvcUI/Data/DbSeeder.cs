@@ -9,14 +9,14 @@ namespace GameShoppingMvcUI.Data
         {
             var roleMgr = service.GetService<RoleManager<IdentityRole>>();
             var userMgr = service.GetService<UserManager<IdentityUser>>();
-            //adding some roles to db if not exists
+            //adding some roles to db
             await roleMgr.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
             await roleMgr.CreateAsync(new IdentityRole(Roles.User.ToString()));
 
             // create admin user if not exists
             var admin = new IdentityUser
             {
-                UserName = "admin",
+                UserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
                 EmailConfirmed = true
             };
