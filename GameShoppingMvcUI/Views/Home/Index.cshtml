@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<Game>
+@{
     // ViewData["Title"] = "Home Page";
 }
 
@@ -19,7 +20,7 @@
         <label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label>
         <div class="input-group">
           <div class="input-group-text">@@</div>
-          <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username">
+                <input type="text" class="form-control" id="sTerm" placeholder="Search by title">
         </div>
       </div>
 
@@ -31,21 +32,29 @@
 
 <div class="container">
     <div class="row">
-        @for (int i = 1; i < 8; i++)
+        @foreach (var game in Model)
         {
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card mx-2 h-100" style="max-width: 540px; border: 1px solid white;">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="https://i.pinimg.com/736x/f8/c6/e4/f8c6e473a82f9f41af8d42611e50cffb.jpg" class="img-fluid rounded-start" alt="...">
+                            @if (string.IsNullOrEmpty(game.Image))
+                            {
+                                <img src="~/images/noImage.jpg" class="img-fluid rounded-start" alt="No Image Available">
+                            }
+                            else
+                            {
+                                <img src="https://i.pinimg.com/736x/f8/c6/e4/f8c6e473a82f9f41af8d42611e50cffb.jpg" class="img-fluid rounded-start" alt=@game.GameName>
+                            }
+
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title">Game title</h5>
+                                <h5 class="card-title">@game.GameName</h5>
                                 <p class="card-text">
-                                    Genre:
-                                    Pulishier:
-                                    Price:
+                                    Genre: @game.GenreName
+                                    Publisher: @game.Publisher
+                                    Price: @game.Price
                                 </p>
                                 <p class="card-text">
                                     <small class="text-body-secondary">Last updated 3 mins ago</small>

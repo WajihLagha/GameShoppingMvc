@@ -6,9 +6,19 @@ namespace GameShoppingMvcUI.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ILogger<HomeController> _logger;
+        private readonly IHomeRepository _homeRepository;
+
+        public HomeController(ILogger<HomeController> logger, IHomeRepository homeRepository)
         {
-            return View();
+            _logger = logger;
+            _homeRepository = homeRepository;
+        }
+
+        public async Task<IActionResult> Index(string sTerm="",int genreId = 0)
+        {
+            IEnumerable<Game> games = await _homeRepository.GetGames(sTerm, genreId);
+            return View(games);
         }
 
         public IActionResult Privacy()
