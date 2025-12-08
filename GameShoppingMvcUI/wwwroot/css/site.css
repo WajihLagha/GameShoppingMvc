@@ -1,0 +1,6 @@
+﻿.game-img {
+    width: 120px; /* fixed width */
+    height: 160px; /* fixed height */
+    object-fit: cover; /* like Flutter BoxFit.cover */
+    border-radius: 6px;
+}

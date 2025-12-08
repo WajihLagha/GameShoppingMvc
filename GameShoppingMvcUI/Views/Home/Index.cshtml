@@ -40,11 +40,11 @@
                         <div class="col-md-4">
                             @if (string.IsNullOrEmpty(game.Image))
                             {
-                                <img src="~/images/noImage.jpg" class="img-fluid rounded-start" alt="No Image Available">
+                                <img style="width:100%;height:300px" src="~/images/noImage.jpg" class="img-fluid rounded-start" alt="No Image Available">
                             }
                             else
                             {
-                                <img src="https://i.pinimg.com/736x/f8/c6/e4/f8c6e473a82f9f41af8d42611e50cffb.jpg" class="img-fluid rounded-start" alt=@game.GameName>
+                                <img style="width:100%;height:300px" src=@game.Image class="img-fluid rounded-start" alt=@game.GameName>
                             }
 
                         </div>
