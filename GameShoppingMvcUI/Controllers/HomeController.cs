@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using GameShoppingMvcUI.Models;
+using GameShoppingMvcUI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameShoppingMvcUI.Controllers
@@ -18,7 +18,14 @@ namespace GameShoppingMvcUI.Controllers
         public async Task<IActionResult> Index(string sTerm="",int genreId = 0)
         {
             IEnumerable<Game> games = await _homeRepository.GetGames(sTerm, genreId);
-            return View(games);
+            IEnumerable<Genre> genres = await _homeRepository.GetGenres();
+            GameDisplayModel model = new GameDisplayModel
+            {
+                Games = games,
+                Genres = genres
+            };
+
+            return View(model);
         }
 
         public IActionResult Privacy()
