@@ -10,5 +10,7 @@ namespace GameShoppingMvcUI.Models
         [Required]
         public string UserId { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public ICollection<CartDetail> CartDetails { get; set; }
     }
 }
