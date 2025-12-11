@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 
 namespace GameShoppingMvcUI.Repositories
 {
@@ -15,16 +16,16 @@ namespace GameShoppingMvcUI.Repositories
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
-        public async Task<bool> AddItem(int gameId, int qty)
+        public async Task<int> AddItem(int gameId, int qty)
         {
+            string? userId = GetUserId();
             var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
                 // add cart if not exists
-                string? userId = GetUserId();
                 if (userId == null)
                 {
-                    return false;
+                    throw new Exception("User is not logged in");
                 }
                 var cart = await GetCart(userId);
                 if (cart == null)
@@ -56,29 +57,32 @@ namespace GameShoppingMvcUI.Repositories
                 }
                 _db.SaveChanges();
                 transaction.Commit();
-                return true;
             }
             catch (Exception e)
             {
-                return false;
+                Console.WriteLine(e.Message);
+                transaction.Rollback();
             }
+            int? cartItemCount = await GetCartItemCount(userId);
+            return cartItemCount ?? 00;
+
         }
-        public async Task<bool> RemoveItem(int gameId)
+        public async Task<int> RemoveItem(int gameId)
         {
+            string? userId = GetUserId();
             try
             {
-                string? userId = GetUserId();
                 if (string.IsNullOrEmpty(userId))
-                    return false;
+                    throw new Exception("User not found");
                 var cart = await GetCart(userId);
                 if (cart is null)
-                    return false;
+                    throw new Exception("Cart not found");
                 // cart details section
                 var cartItem = await _db.CartDetails
                     .FirstOrDefaultAsync(u => u.ShoppingCartId == cart.Id && u.GameId == gameId);
                 if (cartItem is null)
                 {
-                    return false;
+                    throw new Exception("Cart item not found");
                 }
                 //if quentity of an item 1 so remove it from cart
                 else if (cartItem.Quantity == 1)
@@ -91,12 +95,13 @@ namespace GameShoppingMvcUI.Repositories
                     cartItem.Quantity--;
                 }
                 _db.SaveChanges();
-                return true;
             }
             catch (Exception e)
             {
-                return false;
+                
             }
+            int? cartItemCount = await GetCartItemCount(userId);
+            return cartItemCount ?? 00;
         }
         public async Task<IEnumerable<ShoppingCart>> GetUserCart()
         {
@@ -112,12 +117,25 @@ namespace GameShoppingMvcUI.Repositories
 
         }
 
-        private async Task<ShoppingCart?> GetCart(string userId)
+        public async Task<ShoppingCart?> GetCart(string userId)
         {
             var cart = await _db.ShoppingCarts.FirstOrDefaultAsync(u => u.UserId == userId);
             return cart;
         }
-        
+        public async Task<int?> GetCartItemCount(string userId="")
+        {
+            if(!string.IsNullOrEmpty(userId))
+            {
+                userId = GetUserId() ?? "";
+            }
+            var data = await (from cart in _db.ShoppingCarts
+                              join cartDetails in _db.CartDetails
+                              on cart.Id equals cartDetails.ShoppingCartId
+                              select new { cartDetails.Id}
+                              ).ToListAsync();
+            return data.Count;
+        }
+
         private string? GetUserId()
         {
             var principal = _httpContextAccessor?.HttpContext?.User;
