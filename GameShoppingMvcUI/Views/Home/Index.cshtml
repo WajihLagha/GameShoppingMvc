@@ -6,21 +6,21 @@
 <div class="my-2">
    <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
         <div class="col-12">
-            <label class="visually-hidden" for="inlineFormSelectPref">Genres</label>
+            <label class="visually-hidden" for="genreId">Genres</label>
             <select class="form-select" id="genreId" name="genreId">
                 <option selected>Choose...</option>
                 @foreach (var genre in Model.Genres)
                 {
-                    <option value="@genre.Id">@genre.GenreName</option>
+                    <option selected="@(Model.GenreId == genre.Id)" value="@genre.Id">@genre.GenreName</option>
                 }
             </select>
         </div>
 
       <div class="col-12">
-        <label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label>
+            <label class="visually-hidden" for="sTerm">Username</label>
         <div class="input-group">
           <div class="input-group-text">@@</div>
-                <input type="text" class="form-control" id="sTerm" name="sTerm" placeholder="Search by title">
+                <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STearm" placeholder="Search by title">
         </div>
       </div>
 
@@ -53,8 +53,12 @@
                                 <h5 class="card-title">@game.GameName</h5>
                                 <p class="card-text">
                                     Genre: @game.GenreName
+                                </p>
+                                <p>
                                     Publisher: @game.Publisher
-                                    Price: @game.Price
+                                </p>
+                                <p class="card-text">
+                                    Price: $@game.Price
                                 </p>
                                 <p class="card-text">
                                     <small class="text-body-secondary">Last updated 3 mins ago</small>

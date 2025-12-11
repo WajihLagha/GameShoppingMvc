@@ -22,7 +22,9 @@ namespace GameShoppingMvcUI.Controllers
             GameDisplayModel model = new GameDisplayModel
             {
                 Games = games,
-                Genres = genres
+                Genres = genres,
+                STearm = sTerm,
+                GenreId = genreId
             };
 
             return View(model);
