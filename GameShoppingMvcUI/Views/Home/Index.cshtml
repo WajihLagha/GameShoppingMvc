@@ -8,7 +8,7 @@
         <div class="col-12">
             <label class="visually-hidden" for="genreId">Genres</label>
             <select class="form-select" id="genreId" name="genreId">
-                <option selected>Choose...</option>
+                <option selected>Genre...</option>
                 @foreach (var genre in Model.Genres)
                 {
                     <option selected="@(Model.GenreId == genre.Id)" value="@genre.Id">@genre.GenreName</option>
@@ -26,6 +26,7 @@
 
       <div class="col-12">
             <button type="submit" class="btn btn-outline-light">Search</button>
+            <a href="/Home/Index" type="reset" class="btn btn-outline-dark">Reset</a>
       </div>
     </form>
 </div>
@@ -35,7 +36,7 @@
         @foreach (var game in Model.Games)
         {
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card mx-2 h-100" style="max-width: 700px; border: 1px solid white;">
+                <div class="card mx-3 h-100" style="max-width: 700px; border: 1px solid white;">
                     <div class="row g-0">
                         <div class="col-md-4">
                             @if (string.IsNullOrEmpty(game.Image))
@@ -52,13 +53,11 @@
                             <div class="card-body">
                                 <h5 class="card-title">@game.GameName</h5>
                                 <p class="card-text">
-                                    Genre: @game.GenreName
-                                </p>
-                                <p>
-                                    Publisher: @game.Publisher
-                                </p>
-                                <p class="card-text">
-                                    Price: $@game.Price
+                                    <b>Genre:</b> @game.GenreName
+                                    <br />
+                                    <b>Publisher:</b> @game.Publisher
+                                    <br />
+                                    <b>Price:</b> $@game.Price
                                 </p>
                                 <p class="card-text">
                                     <small class="text-body-secondary">Last updated 3 mins ago</small>
