@@ -6,7 +6,7 @@
 <div style="width:90%;margin:auto;">
     @if(Model != null && Model.CartDetails != null && Model.CartDetails.Count > 0){
        <h3>My Cart</h3>
-       <table class="table table-bordered">
+       <table class="table table-striped-columns">
             <tr>
                 <th>Game</th>
                 <th>Image</th>
@@ -14,6 +14,7 @@
                 <th>Unit Price($)</th>
                 <th>Quantity</th>
                 <th>Total Price($)</th>
+                <th>Action</th>
             </tr>
            <tbody>
                @foreach (var item in Model.CartDetails)
@@ -30,14 +31,26 @@
                                 <img src="~/images/noImage.jpg" alt="No Image Available" style="width:80px;height:100px;" />
                             }
                        </td>
-                       <td>@item.Game.Genre</td>
+                       <td>@item.Game.Genre.GenreName</td>
                        <td>@item.Game.Price.ToString("C")</td>
                        <td>@item.Quantity.ToString("C")</td>
                        <td>@(item.Game.Price * item.Quantity).ToString("C")</td>
+                       <td>
+                            <a class="btn btn-outline-warning" href="/Cart/AddItem?gameId=@item.GameId&&redirect=1">+</a>
+                            <a class="btn btn-outline-warning" href="/Cart/RemoveItem?gameId=@item.GameId">-</a>
+                       </td>
                    </tr>
                }
            </tbody>
        </table>
+
+       <div class="my-2">
+            <h5>Total Amount:</h5> 
+            @(Model.CartDetails.Select(item => item.Game.Price * item.Quantity).Sum().ToString("C"))
+       </div>
+       <div class="my-2">
+            <a class="btn btn-outline-secondary" href="#Checkout">Proceed to Checkout</a>
+       </div>
     }
     else
     {
