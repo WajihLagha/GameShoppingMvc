@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing.Printing;
 
 namespace GameShoppingMvcUI.Repositories
 {
@@ -63,7 +62,7 @@ namespace GameShoppingMvcUI.Repositories
                 Console.WriteLine(e.Message);
                 transaction.Rollback();
             }
-            int? cartItemCount = await GetCartItemCount(userId);
+            int? cartItemCount = await GetTotalItemCart(userId);
             return cartItemCount ?? 00;
 
         }
@@ -100,10 +99,10 @@ namespace GameShoppingMvcUI.Repositories
             {
                 
             }
-            int? cartItemCount = await GetCartItemCount(userId);
+            int? cartItemCount = await GetTotalItemCart(userId);
             return cartItemCount ?? 00;
         }
-        public async Task<IEnumerable<ShoppingCart>> GetUserCart()
+        public async Task<ShoppingCart> GetUserCart()
         {
             string? userId = GetUserId();
             if (string.IsNullOrEmpty(userId))
@@ -112,7 +111,7 @@ namespace GameShoppingMvcUI.Repositories
                 .Where(u => u.UserId == userId)
                 .Include(u => u.CartDetails!)
                 .ThenInclude(u => u.Game)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
             return cart;
 
         }
@@ -122,15 +121,16 @@ namespace GameShoppingMvcUI.Repositories
             var cart = await _db.ShoppingCarts.FirstOrDefaultAsync(u => u.UserId == userId);
             return cart;
         }
-        public async Task<int?> GetCartItemCount(string userId="")
+        public async Task<int?> GetTotalItemCart(string userId="")
         {
-            if(!string.IsNullOrEmpty(userId))
+            if(string.IsNullOrEmpty(userId))
             {
                 userId = GetUserId() ?? "";
             }
             var data = await (from cart in _db.ShoppingCarts
                               join cartDetails in _db.CartDetails
                               on cart.Id equals cartDetails.ShoppingCartId
+                              where cart.UserId == userId
                               select new { cartDetails.Id}
                               ).ToListAsync();
             return data.Count;
