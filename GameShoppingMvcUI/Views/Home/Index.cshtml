@@ -75,6 +75,14 @@
 
     <script>
         async function add(gameId) {
+        var userNameEl = document.getElementById('username');
+    if (userNameEl == null) {
+        window.location.href = '/Identity/Account/Login';
+        // var username = userNameEl.innerText;
+        // if(username.length<1){
+        //     window.location.href = '/Identity/Account/Login';
+        // }
+    }
             try{
                 console.log('Adding game to cart:', gameId);
                 var response = await fetch(`/Cart/AddItem?gameId=${gameId}`);
@@ -91,6 +99,8 @@
                     } else {
                         console.error('cartCount element not found');
                     }
+                    window.location.href = '#cartCount';
+
                 } else {
                     console.error('Failed to add item. Status:', response.status);
                     var errorText = await response.text();
