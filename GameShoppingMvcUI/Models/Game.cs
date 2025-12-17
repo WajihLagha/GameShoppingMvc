@@ -25,6 +25,9 @@ namespace GameShoppingMvcUI.Models
         public List<OrderDetail>? OrderDetails { get; set; }
         [NotMapped]
         public string? GenreName { get; set; }
+        [NotMapped]
+        public int? Quantity { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
     }
 }

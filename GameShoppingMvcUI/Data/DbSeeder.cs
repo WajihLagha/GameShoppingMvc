@@ -1,4 +1,5 @@
 ﻿using GameShoppingMvcUI.Constants;
+using GameShoppingMvcUI.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace GameShoppingMvcUI.Data
@@ -29,6 +30,21 @@ namespace GameShoppingMvcUI.Data
                 {
                     await userMgr.AddToRoleAsync(admin, Roles.Admin.ToString());
                 }
+            }
+
+            // Seed order statuses if not exists
+            if (!service.GetService<ApplicationDbContext>().OrderStatuses.Any())
+            {
+                var statuses = new List<OrderStatus>
+                {
+                    new OrderStatus { StatusId = 1, StatusName = "Pending" },
+                    new OrderStatus { StatusId = 2, StatusName = "Shipped" },
+                    new OrderStatus { StatusId = 3, StatusName = "Delivered" },
+                    new OrderStatus { StatusId = 4, StatusName = "Cancelled" },
+                    new OrderStatus { StatusId = 5, StatusName = "Returned" }
+                };
+                service.GetService<ApplicationDbContext>().OrderStatuses.AddRange(statuses);
+                await service.GetService<ApplicationDbContext>().SaveChangesAsync();
             }
         }
     }

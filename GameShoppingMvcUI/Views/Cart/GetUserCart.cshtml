@@ -44,9 +44,11 @@
             <h5>Total Amount:</h5> 
             @(Model.CartDetails.Select(item => (item.Game?.Price ?? 0) * item.Quantity).Sum().ToString("C"))
        </div>
-       <div class="my-2">
-            <a class="btn btn-outline-secondary" href="#">Proceed to Checkout</a>
-       </div>
+        <div class="my-2 text-end">
+             <a class="btn btn-primary btn-lg" href="/Cart/Checkout">
+                 <i class="bi bi-cart-check"></i> Proceed to Checkout
+             </a>
+        </div>
     }
     else
     {

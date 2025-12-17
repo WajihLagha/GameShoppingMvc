@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Order Successful";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center shadow-lg">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h1 class="card-title text-success mb-3">Order Placed Successfully!</h1>
+                    <p class="card-text lead">Thank you for your order, <strong>@ViewBag.CustomerName</strong>!</p>
+                    <p class="text-muted">
+                        Your order has been received and is being processed. 
+                        @if (!string.IsNullOrEmpty(ViewBag.OrderEmail))
+                        {
+                            <text>A confirmation email has been sent to <strong>@ViewBag.OrderEmail</strong>.</text>
+                        }
+                    </p>
+                    
+                    <hr class="my-4" />
+                    
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle"></i> <strong>Note:</strong> This is a test checkout. No actual order has been placed.
+                    </div>
+
+                    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="bi bi-house-fill"></i> Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

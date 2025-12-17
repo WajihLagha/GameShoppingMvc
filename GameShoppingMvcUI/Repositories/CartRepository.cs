@@ -39,10 +39,17 @@ namespace GameShoppingMvcUI.Repositories
                 // cart details section
                 var cartItem = await _db.CartDetails
                     .FirstOrDefaultAsync(u => u.ShoppingCartId == cart.Id && u.GameId == gameId);
+                
+                // Check stock
+                var stock = await _db.Stocks.FirstOrDefaultAsync(s => s.GameId == gameId);
+                if (stock == null || stock.Quantity < (cartItem?.Quantity ?? 0) + qty)
+                {
+                    throw new Exception("Not enough stock available");
+                }
+
                 if (cartItem is not null)
                 {
                     cartItem.Quantity += qty;
-
                 }
                 else
                 {
@@ -152,6 +159,7 @@ namespace GameShoppingMvcUI.Repositories
                     throw new Exception("Cart not found");
                 var cartDetails = _db.CartDetails
                     .Where(u => u.ShoppingCartId == cart.Id)
+                    .Include(u => u.Game)
                     .ToList();
                 if(cartDetails.Count == 0)
                     throw new Exception("Cart is empty");
@@ -173,6 +181,17 @@ namespace GameShoppingMvcUI.Repositories
                         UnitPrice = item.Game != null ? item.Game.Price : 0,
                     };
                     _db.OrderDetails.Add(orderDetail);
+                    
+                    // Decrement stock
+                    var stock = await _db.Stocks.FirstOrDefaultAsync(s => s.GameId == item.GameId);
+                    if (stock != null)
+                    {
+                        if (stock.Quantity < item.Quantity)
+                        {
+                            throw new Exception($"Not enough stock for game: {item.Game?.GameName}");
+                        }
+                        stock.Quantity -= item.Quantity;
+                    }
                 }
                 _db.SaveChanges();
 

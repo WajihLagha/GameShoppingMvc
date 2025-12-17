@@ -1,13 +1,14 @@
-﻿@model GameDisplayModel
+﻿@model GameListVm
 @{
 }
 
 <div class="my-2">
    <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
+        <input type="hidden" name="page" value="1" />
         <div class="col-12">
             <label class="visually-hidden" for="genreId">Genres</label>
             <select class="form-select" id="genreId" name="genreId">
-                <option selected>Genre...</option>
+                <option value="0" selected="@(Model.GenreId == 0)">All Genres...</option>
                 @foreach (var genre in Model.Genres)
                 {
                     <option selected="@(Model.GenreId == genre.Id)" value="@genre.Id">@genre.GenreName</option>
@@ -16,10 +17,10 @@
         </div>
 
       <div class="col-12">
-            <label class="visually-hidden" for="sTerm">Username</label>
+            <label class="visually-hidden" for="sTerm">Search</label>
         <div class="input-group">
-          <div class="input-group-text">@@</div>
-                <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STearm" placeholder="Search by title">
+          <div class="input-group-text">@("@")</div>
+                <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STerm" placeholder="Search by title">
         </div>
       </div>
 
@@ -57,13 +58,63 @@
                                     <b>Publisher:</b> @game.Publisher
                                     <br />
                                     <b>Price:</b> $@game.Price
+                                    <br />
+                                    @if (game.Quantity.HasValue)
+                                    {
+                                        if (game.Quantity.Value > 0)
+                                        {
+                                            <b>Stock:</b> <span class="text-success">@game.Quantity units available</span>
+                                        }
+                                        else
+                                        {
+                                            <b>Stock:</b> <span class="text-danger">Out of Stock</span>
+                                        }
+                                    }
                                 </p>
                                 <p class="card-text">
-                                    <small class="text-body-secondary">Last updated 3 mins ago</small>
+                                    <small class="text-body-secondary">
+                                        @if (game.UpdatedDate.HasValue)
+                                        {
+                                            var timeAgo = DateTime.Now - game.UpdatedDate.Value;
+                                            if (timeAgo.TotalMinutes < 1)
+                                            {
+                                                <text>Updated just now</text>
+                                            }
+                                            else if (timeAgo.TotalHours < 1)
+                                            {
+                                                <text>Updated @((int)timeAgo.TotalMinutes) min@(timeAgo.TotalMinutes >= 2 ? "s" : "") ago</text>
+                                            }
+                                            else if (timeAgo.TotalDays < 1)
+                                            {
+                                                <text>Updated @((int)timeAgo.TotalHours) hour@(timeAgo.TotalHours >= 2 ? "s" : "") ago</text>
+                                            }
+                                            else if (timeAgo.TotalDays < 30)
+                                            {
+                                                <text>Updated @((int)timeAgo.TotalDays) day@(timeAgo.TotalDays >= 2 ? "s" : "") ago</text>
+                                            }
+                                            else
+                                            {
+                                                <text>Updated @game.UpdatedDate.Value.ToString("MMM dd, yyyy")</text>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <text>Last updated 3 mins ago</text>
+                                        }
+                                    </small>
                                 </p>
-                                <button type="button" onclick="add(@game.Id)" class="btn btn-outline-secondary">
-                                    Add to cart
-                                </button>
+                                @if (game.Quantity.HasValue && game.Quantity.Value > 0)
+                                {
+                                    <button type="button" onclick="add(@game.Id)" class="btn btn-outline-secondary">
+                                        Add to cart
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-outline-secondary" disabled>
+                                        Out of Stock
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -72,6 +123,81 @@
         }
     </div>
 </div>
+
+<!-- Pagination Controls -->
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Game pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <!-- Previous Button -->
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = Model.CurrentPage - 1 })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                </li>
+            }
+
+            <!-- Page Numbers -->
+            @{
+                int startPage = Math.Max(1, Model.CurrentPage - 2);
+                int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+                
+                if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = 1 })">1</a>
+                    </li>
+                    if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = i })">@i</a>
+                    </li>
+                }
+
+                if (endPage < Model.TotalPages)
+                {
+                    if (endPage < Model.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = Model.TotalPages })">@Model.TotalPages</a>
+                    </li>
+                }
+            }
+
+            <!-- Next Button -->
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = Model.CurrentPage + 1 })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                </li>
+            }
+        </ul>
+    </nav>
+}
 
     <script>
         async function add(gameId) {

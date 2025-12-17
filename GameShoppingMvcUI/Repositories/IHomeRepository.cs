@@ -2,7 +2,7 @@
 {
     public interface IHomeRepository
     {
-        Task<IEnumerable<Game>> GetGames(string sTerm = "", int genreId = 0);
         Task<IEnumerable<Genre>> GetGenres();
+        Task<GameListVm> GetGames(string sTerm = "", int genreId = 0, int page = 1);
     }
 }

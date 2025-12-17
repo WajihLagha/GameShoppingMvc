@@ -32,13 +32,35 @@ namespace GameShoppingMvcUI.Controllers
             int? cartItem = await _cartRepo.GetTotalItemCart();
             return Ok(cartItem);
         }
-        public async Task<IActionResult> Checkout()
+        public IActionResult Checkout()
         {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PlaceOrder(string fullName, string email, string phone, string address)
+        {
+            // This is a dummy implementation for testing
+            // In a real scenario, you would create an order and process the cart
             bool isCheckout = await _cartRepo.DoCheckout();
             if (!isCheckout)
-                throw new Exception("something happen in server side");
-            return RedirectToAction("Index", "Home");
+            {
+                TempData["ErrorMessage"] = "Checkout failed. Please try again.";
+                return RedirectToAction(nameof(Checkout));
+            }
 
+            // Pass the customer details to the success page
+            TempData["CustomerName"] = fullName;
+            TempData["OrderEmail"] = email;
+            return RedirectToAction("OrderSuccess");
+        }
+
+        public IActionResult OrderSuccess()
+        {
+            ViewBag.CustomerName = TempData["CustomerName"] ?? "Customer";
+            ViewBag.OrderEmail = TempData["OrderEmail"] ?? "";
+            return View();
         }
     }
 }

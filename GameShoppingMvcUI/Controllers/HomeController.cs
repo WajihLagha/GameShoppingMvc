@@ -15,18 +15,9 @@ namespace GameShoppingMvcUI.Controllers
             _homeRepository = homeRepository;
         }
 
-        public async Task<IActionResult> Index(string sTerm="",int genreId = 0)
+        public async Task<IActionResult> Index(string sTerm="",int genreId = 0, int page = 1)
         {
-            IEnumerable<Game> games = await _homeRepository.GetGames(sTerm, genreId);
-            IEnumerable<Genre> genres = await _homeRepository.GetGenres();
-            GameDisplayModel model = new GameDisplayModel
-            {
-                Games = games,
-                Genres = genres,
-                STearm = sTerm,
-                GenreId = genreId
-            };
-
+            GameListVm model = await _homeRepository.GetGames(sTerm, genreId, page);
             return View(model);
         }
 
