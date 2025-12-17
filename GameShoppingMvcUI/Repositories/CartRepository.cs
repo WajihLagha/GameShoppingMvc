@@ -137,7 +137,7 @@ namespace GameShoppingMvcUI.Repositories
             return data.Count;
         }
         
-        public async Task<bool> DoCheck()
+        public async Task<bool> DoCheckout()
         {
             using var transaction = _db.Database.BeginTransaction();
             try

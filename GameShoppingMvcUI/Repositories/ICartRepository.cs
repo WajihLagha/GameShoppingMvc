@@ -6,5 +6,6 @@
         Task<int> RemoveItem(int gameId);
         Task<ShoppingCart> GetUserCart();
         Task<int?> GetTotalItemCart(string userId = "");
+        Task<bool> DoCheckout();
     }
 }

@@ -32,5 +32,13 @@ namespace GameShoppingMvcUI.Controllers
             int? cartItem = await _cartRepo.GetTotalItemCart();
             return Ok(cartItem);
         }
+        public async Task<IActionResult> Checkout()
+        {
+            bool isCheckout = await _cartRepo.DoCheckout();
+            if (!isCheckout)
+                throw new Exception("something happen in server side");
+            return RedirectToAction("Index", "Home");
+
+        }
     }
 }
