@@ -111,6 +111,7 @@ namespace GameShoppingMvcUI.Repositories
                 .Where(u => u.UserId == userId)
                 .Include(u => u.CartDetails!)
                 .ThenInclude(u => u.Game)
+                .ThenInclude(u => u.Genre)
                 .FirstOrDefaultAsync();
             return cart;
 
@@ -134,6 +135,57 @@ namespace GameShoppingMvcUI.Repositories
                               select new { cartDetails.Id}
                               ).ToListAsync();
             return data.Count;
+        }
+        
+        public async Task<bool> DoCheck()
+        {
+            using var transaction = _db.Database.BeginTransaction();
+            try
+            {
+                //logic
+                //move data from cartDetail to order detail then we will remove cart detail
+                var userId = GetUserId();
+                if (string.IsNullOrEmpty(userId))
+                    throw new Exception("User not found");
+                var cart =  await GetCart(userId);
+                if (cart is null)
+                    throw new Exception("Cart not found");
+                var cartDetails = _db.CartDetails
+                    .Where(u => u.ShoppingCartId == cart.Id)
+                    .ToList();
+                if(cartDetails.Count == 0)
+                    throw new Exception("Cart is empty");
+                var order = new Order()
+                {
+                    UserId = userId,
+                    CreateDate = DateTime.UtcNow,
+                    OrderStatusId = 1, // Pending
+                };
+                _db.Orders.Add(order);
+                _db.SaveChanges();
+                foreach( var item in cartDetails)
+                {
+                    var orderDetail = new OrderDetail
+                    {
+                        GameId = item.GameId,
+                        OrderId = order.Id,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.Game != null ? item.Game.Price : 0,
+                    };
+                    _db.OrderDetails.Add(orderDetail);
+                }
+                _db.SaveChanges();
+
+                // remove cart details
+                _db.CartDetails.RemoveRange(cartDetails);
+                _db.SaveChanges();
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         private string? GetUserId()
