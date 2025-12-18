@@ -14,7 +14,7 @@
                 <label for="genreId" class="form-label">
                     <i class="bi bi-funnel-fill"></i> Genre
                 </label>
-                <select class="form-select" id="genreId" name="genreId">
+                <select class="form-select" id="genreId" name="genreId" onchange="this.form.submit()">
                     <option value="0" selected="@(Model.GenreId == 0)">All Genres</option>
                     @foreach (var genre in Model.Genres)
                     {
