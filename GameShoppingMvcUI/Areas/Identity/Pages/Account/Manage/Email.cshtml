@@ -3,42 +3,78 @@
 @{
     ViewData["Title"] = "Manage Email";
     ViewData["ActivePage"] = ManageNavPages.Email;
+    Layout = null;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="email-form" method="post">
-            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
-            @if (Model.IsEmailConfirmed)
-            {
-                <div class="form-floating mb-3 input-group">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                        <div class="input-group-append">
-                            <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
-                        </div>
-                    <label asp-for="Email" class="form-label"></label>
-                </div>
-            }
-            else
-            {
-                <div class="form-floating mb-3">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                    <label asp-for="Email" class="form-label"></label>
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
-                </div>
-            }
-            <div class="form-floating mb-3">
-                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
-                <label asp-for="Input.NewEmail" class="form-label"></label>
-                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - EGameStore</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/auth-styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card" style="max-width: 600px;">
+            <!-- Logo Section -->
+            <div class="auth-logo">
+                <h1><i class="bi bi-envelope-fill"></i> Manage Email</h1>
+                <p>Update your email address</p>
             </div>
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-100 btn btn-lg btn-primary">Change email</button>
-        </form>
-    </div>
-</div>
 
-@section Scripts {
+            <partial name="_StatusMessage" for="StatusMessage" />
+
+            <!-- Email Form -->
+            <form id="email-form" method="post" class="auth-form">
+                <div asp-validation-summary="All" class="text-danger validation-summary-errors" role="alert"></div>
+                
+                @if (Model.IsEmailConfirmed)
+                {
+                    <!-- Current Email (Confirmed) -->
+                    <div class="form-floating-modern">
+                        <input asp-for="Email" class="form-control" placeholder="Current email" disabled style="padding-right: 3rem;" />
+                        <label asp-for="Email" class="form-label"></label>
+                        <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #48bb78; font-size: 1.5rem;">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <!-- Current Email (Not Confirmed) -->
+                    <div class="form-floating-modern">
+                        <input asp-for="Email" class="form-control" placeholder="Current email" disabled />
+                        <label asp-for="Email" class="form-label"></label>
+                    </div>
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="auth-submit-btn" style="margin-bottom: 1.5rem;">
+                        <i class="bi bi-send"></i> Send Verification Email
+                    </button>
+                }
+                
+                <!-- New Email Input -->
+                <div class="form-floating-modern">
+                    <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="New email" />
+                    <label asp-for="Input.NewEmail" class="form-label"></label>
+                    <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="auth-submit-btn">
+                    <i class="bi bi-check-circle"></i> Change Email
+                </button>
+
+                <!-- Back Link -->
+                <div class="auth-bottom-link">
+                    <p><a asp-page="./Index"><i class="bi bi-arrow-left"></i> Back to Profile</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
-}
+</body>
+</html>

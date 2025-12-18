@@ -1,122 +1,177 @@
 ﻿@model GameListVm
 @{
+    ViewData["Title"] = "Game Store - Browse Games";
 }
 
-<div class="my-2">
-   <form asp-action="Index" class="row row-cols-lg-auto g-3 align-items-center">
+<link rel="stylesheet" href="~/css/modern-ui.css" />
+
+<div class="filter-section my-4">
+    <form asp-action="Index" class="row g-3 align-items-end">
         <input type="hidden" name="page" value="1" />
-        <div class="col-12">
-            <label class="visually-hidden" for="genreId">Genres</label>
-            <select class="form-select" id="genreId" name="genreId">
-                <option value="0" selected="@(Model.GenreId == 0)">All Genres...</option>
-                @foreach (var genre in Model.Genres)
-                {
-                    <option selected="@(Model.GenreId == genre.Id)" value="@genre.Id">@genre.GenreName</option>
-                }
-            </select>
+        
+        <div class="col-md-4">
+            <div class="filter-control">
+                <label for="genreId" class="form-label">
+                    <i class="bi bi-funnel-fill"></i> Genre
+                </label>
+                <select class="form-select" id="genreId" name="genreId">
+                    <option value="0" selected="@(Model.GenreId == 0)">All Genres</option>
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option selected="@(Model.GenreId == genre.Id)" value="@genre.Id">@genre.GenreName</option>
+                    }
+                </select>
+            </div>
         </div>
 
-      <div class="col-12">
-            <label class="visually-hidden" for="sTerm">Search</label>
-        <div class="input-group">
-          <div class="input-group-text">@("@")</div>
-                <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STerm" placeholder="Search by title">
+        <div class="col-md-5">
+            <div class="filter-control">
+                <label for="sTerm" class="form-label">
+                    <i class="bi bi-search"></i> Search
+                </label>
+                <div class="input-group-modern">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STerm" placeholder="Search by game title...">
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="col-12">
-            <button type="submit" class="btn btn-outline-light">Search</button>
-            <a href="/Home/Index" type="reset" class="btn btn-outline-dark">Reset</a>
-      </div>
+        <div class="col-md-3">
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-modern btn-search flex-fill">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <a href="/Home/Index" class="btn btn-modern btn-reset">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+            </div>
+        </div>
     </form>
 </div>
 
 <div class="container">
-    <div class="row">
+    <div class="row g-4">
         @foreach (var game in Model.Games)
         {
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card mx-3 h-100" style="max-width: 700px; border: 1px solid white;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            @if (string.IsNullOrEmpty(game.Image))
+            <div class="col-lg-4 col-md-6">
+                <div class="game-card">
+                    <div class="game-card-image">
+                        @if (string.IsNullOrEmpty(game.Image))
+                        {
+                            <img src="~/images/noImage.jpg" alt="No Image Available">
+                        }
+                        else
+                        {
+                            <img src="@game.Image" alt="@game.GameName">
+                        }
+                    </div>
+                    
+                    <div class="game-card-body">
+                        <h5 class="game-card-title">@game.GameName</h5>
+                        
+                        <div class="update-time">
+                            <i class="bi bi-clock"></i>
+                            @if (game.UpdatedDate.HasValue)
                             {
-                                <img style="width:100%;height:250px" src="~/images/noImage.jpg" class="img-fluid rounded-start" alt="No Image Available">
-                            }
-                            else
-                            {
-                                <img style="width:100%;height:250px" src=@game.Image class="img-fluid rounded-start" alt=@game.GameName>
-                            }
-
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">@game.GameName</h5>
-                                <p class="card-text">
-                                    <b>Genre:</b> @game.GenreName
-                                    <br />
-                                    <b>Publisher:</b> @game.Publisher
-                                    <br />
-                                    <b>Price:</b> $@game.Price
-                                    <br />
-                                    @if (game.Quantity.HasValue)
-                                    {
-                                        if (game.Quantity.Value > 0)
-                                        {
-                                            <b>Stock:</b> <span class="text-success">@game.Quantity units available</span>
-                                        }
-                                        else
-                                        {
-                                            <b>Stock:</b> <span class="text-danger">Out of Stock</span>
-                                        }
-                                    }
-                                </p>
-                                <p class="card-text">
-                                    <small class="text-body-secondary">
-                                        @if (game.UpdatedDate.HasValue)
-                                        {
-                                            var timeAgo = DateTime.Now - game.UpdatedDate.Value;
-                                            if (timeAgo.TotalMinutes < 1)
-                                            {
-                                                <text>Updated just now</text>
-                                            }
-                                            else if (timeAgo.TotalHours < 1)
-                                            {
-                                                <text>Updated @((int)timeAgo.TotalMinutes) min@(timeAgo.TotalMinutes >= 2 ? "s" : "") ago</text>
-                                            }
-                                            else if (timeAgo.TotalDays < 1)
-                                            {
-                                                <text>Updated @((int)timeAgo.TotalHours) hour@(timeAgo.TotalHours >= 2 ? "s" : "") ago</text>
-                                            }
-                                            else if (timeAgo.TotalDays < 30)
-                                            {
-                                                <text>Updated @((int)timeAgo.TotalDays) day@(timeAgo.TotalDays >= 2 ? "s" : "") ago</text>
-                                            }
-                                            else
-                                            {
-                                                <text>Updated @game.UpdatedDate.Value.ToString("MMM dd, yyyy")</text>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <text>Last updated 3 mins ago</text>
-                                        }
-                                    </small>
-                                </p>
-                                @if (game.Quantity.HasValue && game.Quantity.Value > 0)
+                                var timeAgo = DateTime.Now - game.UpdatedDate.Value;
+                                if (timeAgo.TotalMinutes < 1)
                                 {
-                                    <button type="button" onclick="add(@game.Id)" class="btn btn-outline-secondary">
-                                        Add to cart
-                                    </button>
+                                    <text>Updated just now</text>
+                                }
+                                else if (timeAgo.TotalHours < 1)
+                                {
+                                    <text>Updated @((int)timeAgo.TotalMinutes) min@(timeAgo.TotalMinutes >= 2 ? "s" : "") ago</text>
+                                }
+                                else if (timeAgo.TotalDays < 1)
+                                {
+                                    <text>Updated @((int)timeAgo.TotalHours) hour@(timeAgo.TotalHours >= 2 ? "s" : "") ago</text>
+                                }
+                                else if (timeAgo.TotalDays < 30)
+                                {
+                                    <text>Updated @((int)timeAgo.TotalDays) day@(timeAgo.TotalDays >= 2 ? "s" : "") ago</text>
                                 }
                                 else
                                 {
-                                    <button type="button" class="btn btn-outline-secondary" disabled>
-                                        Out of Stock
-                                    </button>
+                                    <text>Updated @game.UpdatedDate.Value.ToString("MMM dd, yyyy")</text>
+                                }
+                            }
+                            else
+                            {
+                                <text>Recently updated</text>
+                            }
+                        </div>
+
+                        <div class="game-info-grid">
+                            <div class="game-info-item">
+                                <div class="game-info-icon icon-genre">
+                                    <i class="bi bi-controller"></i>
+                                </div>
+                                <div>
+                                    <div class="game-info-label">Genre</div>
+                                    <div class="game-info-value">@game.GenreName</div>
+                                </div>
+                            </div>
+
+                            <div class="game-info-item">
+                                <div class="game-info-icon icon-publisher">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                                <div>
+                                    <div class="game-info-label">Publisher</div>
+                                    <div class="game-info-value">@game.Publisher</div>
+                                </div>
+                            </div>
+
+                            <div class="game-info-item">
+                                <div class="game-info-icon icon-price">
+                                    <i class="bi bi-tag-fill"></i>
+                                </div>
+                                <div>
+                                    <div class="game-info-label">Price</div>
+                                    <div class="game-price">$@game.Price</div>
+                                </div>
+                            </div>
+
+                            <div class="game-info-item">
+                                @if (game.Quantity.HasValue && game.Quantity.Value > 0)
+                                {
+                                    <div class="game-info-icon icon-stock">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="game-info-label">Stock</div>
+                                        <div class="stock-badge stock-in">
+                                            @game.Quantity units available
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="game-info-icon icon-stock-out">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="game-info-label">Stock</div>
+                                        <div class="stock-badge stock-out">
+                                            Out of Stock
+                                        </div>
+                                    </div>
                                 }
                             </div>
                         </div>
+
+                        @if (game.Quantity.HasValue && game.Quantity.Value > 0)
+                        {
+                            <button type="button" onclick="add(@game.Id)" class="btn-add-cart">
+                                <i class="bi bi-cart-plus"></i> Add to Cart
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn-add-cart" disabled>
+                                <i class="bi bi-x-circle"></i> Out of Stock
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
@@ -127,7 +182,7 @@
 <!-- Pagination Controls -->
 @if (Model.TotalPages > 1)
 {
-    <nav aria-label="Game pagination" class="mt-4">
+    <nav aria-label="Game pagination" class="mt-5 mb-4">
         <ul class="pagination justify-content-center">
             <!-- Previous Button -->
             @if (Model.CurrentPage > 1)
@@ -199,22 +254,18 @@
     </nav>
 }
 
-    <script>
-        async function add(gameId) {
+<script>
+    async function add(gameId) {
         var userNameEl = document.getElementById('username');
-    if (userNameEl == null) {
-        window.location.href = '/Identity/Account/Login';
-        // var username = userNameEl.innerText;
-        // if(username.length<1){
-        //     window.location.href = '/Identity/Account/Login';
-        // }
-    }
-            try{
+        if (userNameEl == null) {
+            window.location.href = '/Identity/Account/Login';
+        } else {
+            try {
                 console.log('Adding game to cart:', gameId);
                 var response = await fetch(`/Cart/AddItem?gameId=${gameId}`);
                 console.log('Response status:', response.status);
                 
-                if (response.ok){
+                if (response.ok) {
                     var result = await response.json();
                     console.log('Cart count updated to:', result);
                     
@@ -236,4 +287,5 @@
                 console.error('Error adding to cart:', error);
             }
         }
-    </script>
+    }
+</script>

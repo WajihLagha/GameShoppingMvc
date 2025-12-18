@@ -2,37 +2,101 @@
     ViewData["Title"] = "Order Successful";
 }
 
+<link rel="stylesheet" href="~/css/modern-ui.css" />
+
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card text-center shadow-lg">
-                <div class="card-body p-5">
-                    <div class="mb-4">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+        <div class="col-lg-7 col-md-9">
+            <div style="background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--card-shadow); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.8); text-align: center;">
+                
+                <!-- Success Animation -->
+                <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 3rem 2rem;">
+                    <div style="font-size: 5rem; color: white; animation: scaleIn 0.5s ease-out;">
+                        <i class="bi bi-check-circle-fill"></i>
                     </div>
-                    <h1 class="card-title text-success mb-3">Order Placed Successfully!</h1>
-                    <p class="card-text lead">Thank you for your order, <strong>@ViewBag.CustomerName</strong>!</p>
-                    <p class="text-muted">
-                        Your order has been received and is being processed. 
-                        @if (!string.IsNullOrEmpty(ViewBag.OrderEmail))
-                        {
-                            <text>A confirmation email has been sent to <strong>@ViewBag.OrderEmail</strong>.</text>
-                        }
+                </div>
+
+                <div style="padding: 2.5rem 2rem;">
+                    <h1 style="color: #22543d; font-weight: 800; margin-bottom: 1rem; font-size: 2rem;">
+                        Order Placed Successfully!
+                    </h1>
+                    
+                    <p style="color: #4a5568; font-size: 1.125rem; margin-bottom: 1.5rem;">
+                        Thank you for your order, <strong style="color: #2d3748;">@ViewBag.CustomerName</strong>!
                     </p>
                     
-                    <hr class="my-4" />
-                    
-                    <div class="alert alert-info" role="alert">
-                        <i class="bi bi-info-circle"></i> <strong>Note:</strong> This is a test checkout. No actual order has been placed.
+                    <p style="color: #718096; margin-bottom: 2rem;">
+                        Your order has been received and is being processed.
+                        @if (!string.IsNullOrEmpty(ViewBag.OrderEmail))
+                        {
+                            <span>A confirmation email has been sent to <strong style="color: #4a5568;">@ViewBag.OrderEmail</strong>.</span>
+                        }
+                    </p>
+
+                    <!-- Order Details Card -->
+                    <div style="background: #f7fafc; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 2px solid #e2e8f0;">
+                        <div style="display: grid; gap: 1rem; text-align: left;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #718096; font-weight: 600;">
+                                    <i class="bi bi-person"></i> Customer
+                                </span>
+                                <span style="color: #2d3748; font-weight: 700;">@ViewBag.CustomerName</span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(ViewBag.OrderEmail))
+                            {
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #718096; font-weight: 600;">
+                                        <i class="bi bi-envelope"></i> Email
+                                    </span>
+                                    <span style="color: #2d3748; font-weight: 700;">@ViewBag.OrderEmail</span>
+                                </div>
+                            }
+                        </div>
                     </div>
 
-                    <div class="d-grid gap-2 col-6 mx-auto mt-4">
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                    <!-- Info Alert -->
+                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; padding: 1rem; margin-bottom: 2rem; color: white;">
+                        <i class="bi bi-info-circle-fill"></i> 
+                        <strong>Note:</strong> This is a test checkout. No actual order has been placed.
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: grid; gap: 0.75rem;">
+                        <a asp-controller="Home" asp-action="Index" class="btn-add-cart" style="text-decoration: none; cursor: pointer;">
                             <i class="bi bi-house-fill"></i> Continue Shopping
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn" style="background: #f7fafc; color: #4a5568; border: 2px solid #e2e8f0; border-radius: 12px; padding: 0.875rem; font-weight: 600; text-align: center; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="bi bi-arrow-left"></i> Back to Home
                         </a>
                     </div>
                 </div>
             </div>
+
+            <!-- Thank You Note -->
+            <div class="text-center mt-4" style="color: #718096;">
+                <p style="margin: 0;">
+                    <i class="bi bi-heart-fill" style="color: #f56565;"></i> 
+                    Thank you for choosing EGameStore!
+                </p>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    @@keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+</style>

@@ -10,8 +10,7 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="/Home/Index">
-                <img src="~/images/logo.png" alt="EGameStore Logo" style="height: 40px; margin-right: 10px;" />
+            <a class="navbar-brand" href="/Home/Index">
                 <span>EGameStore</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,14 +35,7 @@
                             </a>
                         </li>
                     }
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Profile" asp-action="Index">
-                                <i class="bi bi-person-circle"></i> Profile
-                            </a>
-                        </li>
-                    }
+
                 </ul>
                 <partial name="_LoginPartial"/>
 
