@@ -15,11 +15,13 @@ namespace GameShoppingMvcUI.Repositories
         {
             return await _db.Genres.ToListAsync();
         }
-        public async Task<GameListVm> GetGames(string sTerm = "", int genreId = 0, int page = 1)
+        public async Task<GameListVm> GetGames(string sTerm = "", int genreId = 0, double? maxPrice = null, int page = 1)
         {
             string sTermOrig = sTerm;
             sTerm = sTerm.ToLower();
             int pageSize = 10;
+
+            var maxPriceInDb = await _db.Games.AnyAsync() ? await _db.Games.MaxAsync(g => g.Price) : 0;
 
             var gamesQuery = (
                 from game in _db.Games
@@ -29,6 +31,7 @@ namespace GameShoppingMvcUI.Repositories
                 where (string.IsNullOrWhiteSpace(sTerm) ||
                        game.GameName!.ToLower().Contains(sTerm))
                    && (genreId == 0 || game.GenreId == genreId)
+                   && (maxPrice == null || game.Price <= maxPrice)
                 select new Game
                 {
                     Id = game.Id,
@@ -63,7 +66,9 @@ namespace GameShoppingMvcUI.Repositories
                 GenreId = genreId,
                 CurrentPage = page,
                 TotalPages = totalPages,
-                PageSize = pageSize
+                PageSize = pageSize,
+                MaxPrice = maxPriceInDb,
+                SelectedMaxPrice = maxPrice
             };
         }
 

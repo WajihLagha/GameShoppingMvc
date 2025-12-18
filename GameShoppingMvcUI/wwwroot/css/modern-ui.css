@@ -18,6 +18,121 @@ body {
     min-height: 100vh;
 }
 
+/* Hero Section */
+.hero-section {
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    /* Modern Animated Gradient Background (No Image) */
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+
+    color: white;
+    margin-top: -3rem;
+    /* Pull up slightly */
+    padding-top: 3rem;
+    border-bottom-left-radius: 50% 10%;
+    /* Subtle curve */
+    border-bottom-right-radius: 50% 10%;
+    margin-bottom: 4rem;
+    padding-bottom: 5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.hero-logo {
+    max-width: 550px;
+    width: 90%;
+    height: auto;
+    /* Increase drop shadow for better contrast against colorful bg */
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.3));
+    animation: fadeInDown 1s ease-out;
+    margin-bottom: 1rem;
+}
+
+.hero-scroll-btn {
+    position: absolute;
+    bottom: -30px;
+    /* Floating on the border edge */
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    /* Clean white button */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    animation: bounce 2s infinite;
+    color: #e73c7e;
+    /* Match gradient theme */
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    z-index: 10;
+}
+
+.hero-scroll-btn:hover {
+    color: #23a6d5;
+    background: white;
+    transform: translateX(-50%) translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    40% {
+        transform: translateX(-50%) translateY(-20px);
+    }
+
+    60% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Filter Section - Modern Design */
 .filter-section {
     background: var(--card-bg);

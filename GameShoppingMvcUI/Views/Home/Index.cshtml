@@ -5,11 +5,18 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
-<div class="filter-section my-4">
+<header class="hero-section">
+    <img src="~/images/logo.png" alt="EGameStore" class="hero-logo">
+    <a href="#browse-section" class="hero-scroll-btn">
+        <i class="bi bi-chevron-down"></i>
+    </a>
+</header>
+
+<div id="browse-section" class="filter-section my-4">
     <form asp-action="Index" class="row g-3 align-items-end">
         <input type="hidden" name="page" value="1" />
         
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="filter-control">
                 <label for="genreId" class="form-label">
                     <i class="bi bi-funnel-fill"></i> Genre
@@ -24,22 +31,35 @@
             </div>
         </div>
 
-        <div class="col-md-5">
+        <div class="col-md-3">
+            <div class="filter-control">
+                <label for="maxPrice" class="form-label">
+                    <i class="bi bi-tag-fill"></i> Max Price: <span id="priceValue">$@(Model.SelectedMaxPrice?.ToString("0") ?? Model.MaxPrice.ToString("0"))</span>
+                </label>
+                <input type="range" class="form-range" id="maxPrice" name="maxPrice" 
+                       min="0" max="@Model.MaxPrice" step="5" 
+                       value="@(Model.SelectedMaxPrice ?? Model.MaxPrice)" 
+                       oninput="document.getElementById('priceValue').innerText = '$' + this.value"
+                       onchange="this.form.submit()">
+            </div>
+        </div>
+
+        <div class="col-md-4">
             <div class="filter-control">
                 <label for="sTerm" class="form-label">
                     <i class="bi bi-search"></i> Search
                 </label>
                 <div class="input-group-modern">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STerm" placeholder="Search by game title...">
+                    <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STerm" placeholder="Search title...">
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-modern btn-search flex-fill">
-                    <i class="bi bi-search"></i> Search
+                    <i class="bi bi-search"></i>
                 </button>
                 <a href="/Home/Index" class="btn btn-modern btn-reset">
                     <i class="bi bi-arrow-clockwise"></i>
@@ -188,7 +208,7 @@
             @if (Model.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = Model.CurrentPage - 1 })" aria-label="Previous">
+                    <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, maxPrice = Model.SelectedMaxPrice, page = Model.CurrentPage - 1 })" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -208,7 +228,7 @@
                 if (startPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = 1 })">1</a>
+                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, maxPrice = Model.SelectedMaxPrice, page = 1 })">1</a>
                     </li>
                     if (startPage > 2)
                     {
@@ -219,7 +239,7 @@
                 for (int i = startPage; i <= endPage; i++)
                 {
                     <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = i })">@i</a>
+                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, maxPrice = Model.SelectedMaxPrice, page = i })">@i</a>
                     </li>
                 }
 
@@ -230,7 +250,7 @@
                         <li class="page-item disabled"><span class="page-link">...</span></li>
                     }
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = Model.TotalPages })">@Model.TotalPages</a>
+                        <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, maxPrice = Model.SelectedMaxPrice, page = Model.TotalPages })">@Model.TotalPages</a>
                     </li>
                 }
             }
@@ -239,7 +259,7 @@
             @if (Model.CurrentPage < Model.TotalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, page = Model.CurrentPage + 1 })" aria-label="Next">
+                    <a class="page-link" href="@Url.Action("Index", new { sTerm = Model.STerm, genreId = Model.GenreId, maxPrice = Model.SelectedMaxPrice, page = Model.CurrentPage + 1 })" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -253,6 +273,58 @@
         </ul>
     </nav>
 }
+
+
+<!-- Floating Action Button -->
+<div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1030">
+    <button class="btn btn-primary rounded-circle shadow-lg p-3" style="width: 60px; height: 60px;" data-bs-toggle="modal" data-bs-target="#recommendationModal" title="Get AI Recommendation">
+        <i class="bi bi-stars fs-4"></i>
+    </button>
+</div>
+
+<!-- Recommendation Modal -->
+<div class="modal fade" id="recommendationModal" tabindex="-1" aria-labelledby="recommendationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="recommendationModalLabel">
+                    <i class="bi bi-stars text-warning"></i> AI Game Matcher
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">Describe what you're looking for, and let AI find your next favorite game!</p>
+                <form id="recommendationForm">
+                    <div class="mb-3">
+                        <label for="aiGenre" class="form-label">Genre Preference (Optional)</label>
+                        <select class="form-select" id="aiGenre">
+                            <option value="">Any Genre</option>
+                            @foreach (var genre in Model.Genres)
+                            {
+                                <option value="@genre.GenreName">@genre.GenreName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="aiPrompt" class="form-label">What kind of game do you want?</label>
+                        <textarea class="form-control" id="aiPrompt" rows="3" placeholder="e.g., A relaxing farming simulator with RPG elements..."></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-modern" id="btnGetRecommendation">
+                            <span class="spinner-border spinner-border-sm d-none" id="aiSpinner" role="status" aria-hidden="true"></span>
+                            <span id="aiButtonText"><i class="bi bi-stars"></i> Get Recommendation</span>
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="aiResult" class="mt-4 d-none">
+                    <h6 class="border-bottom pb-2 mb-3">Recommendation</h6>
+                    <div class="p-3 bg-light rounded" id="aiResponseText" style="white-space: pre-wrap;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     async function add(gameId) {
@@ -288,4 +360,76 @@
             }
         }
     }
+
+    document.getElementById('recommendationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const prompt = document.getElementById('aiPrompt').value;
+        const genre = document.getElementById('aiGenre').value;
+        const btn = document.getElementById('btnGetRecommendation');
+        const spinner = document.getElementById('aiSpinner');
+        const btnText = document.getElementById('aiButtonText');
+        const resultDiv = document.getElementById('aiResult');
+        const responseText = document.getElementById('aiResponseText');
+
+        if (!prompt) {
+            alert('Please describe what you are looking for.');
+            return;
+        }
+
+        // UI Loading State
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
+        btnText.innerText = ' Thinking...';
+        resultDiv.classList.add('d-none');
+
+        try {
+            const response = await fetch(`/Home/GetRecommendation?prompt=${encodeURIComponent(prompt)}&genre=${encodeURIComponent(genre)}`);
+            
+            if (response.ok) {
+                const data = await response.text();
+                 // Check if the response itself contains an error message from the service
+                if (data.startsWith("Error from Gemini API") || data.startsWith("Please configure")) {
+                     if (data.includes("429") || data.includes("Quota") || data.includes("RESOURCE_EXHAUSTED")) {
+                        responseText.innerHTML = `
+                            <div class="text-danger">
+                                <i class="bi bi-exclamation-triangle-fill"></i> <strong>Quota Exceeded</strong><br>
+                                The AI service is currently busy or the daily limit has been reached. Please try again later.
+                            </div>`;
+                    } else {
+                        responseText.innerText = data;
+                    }
+                } else {
+                    responseText.innerText = data;
+                }
+                resultDiv.classList.remove('d-none');
+            } else {
+                // HTTP Error
+                if (response.status === 429) {
+                     responseText.innerHTML = `
+                        <div class="text-danger">
+                            <i class="bi bi-exclamation-triangle-fill"></i> <strong>Quota Exceeded</strong><br>
+                            You have exceeded the API rate limit. Please check your plan or try again later.
+                        </div>`;
+                } else {
+                    responseText.innerText = "Failed to get recommendation. Server returned " + response.status;
+                }
+                 resultDiv.classList.remove('d-none');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+             responseText.innerHTML = `
+                <div class="text-danger">
+                    <i class="bi bi-wifi-off"></i> <strong>Network Error</strong><br>
+                    Could not connect to the recommendation service.
+                </div>`;
+             resultDiv.classList.remove('d-none');
+        } finally {
+            // Reset UI
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+            btnText.innerHTML = '<i class="bi bi-stars"></i> Get Recommendation';
+        }
+    });
 </script>
