@@ -13,57 +13,87 @@
 </header>
 
 <div id="browse-section" class="filter-section my-4">
-    <form asp-action="Index" class="row g-3 align-items-end">
+    <form asp-action="Index" id="filterForm" class="row g-3 align-items-end">
         <input type="hidden" name="page" value="1" />
         
+        <!-- Search -->
         <div class="col-md-3">
-            <div class="filter-control">
-                <label for="genreId" class="form-label">
-                    <i class="bi bi-funnel-fill"></i> Genre
-                </label>
-                <select class="form-select" id="genreId" name="genreId" onchange="this.form.submit()">
-                    <option value="0" selected="@(Model.GenreId == 0)">All Genres</option>
-                    @foreach (var genre in Model.Genres)
-                    {
-                        <option selected="@(Model.GenreId == genre.Id)" value="@genre.Id">@genre.GenreName</option>
-                    }
-                </select>
+            <label for="sTerm" class="form-label-modern"><i class="bi bi-search"></i> Search</label>
+            <div class="input-group-modern">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STerm" placeholder="Search title...">
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="filter-control">
-                <label for="maxPrice" class="form-label">
-                    <i class="bi bi-tag-fill"></i> Max Price: <span id="priceValue">$@(Model.SelectedMaxPrice?.ToString("0") ?? Model.MaxPrice.ToString("0"))</span>
-                </label>
-                <input type="range" class="form-range" id="maxPrice" name="maxPrice" 
-                       min="0" max="@Model.MaxPrice" step="5" 
-                       value="@(Model.SelectedMaxPrice ?? Model.MaxPrice)" 
-                       oninput="document.getElementById('priceValue').innerText = '$' + this.value"
-                       onchange="this.form.submit()">
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="filter-control">
-                <label for="sTerm" class="form-label">
-                    <i class="bi bi-search"></i> Search
-                </label>
-                <div class="input-group-modern">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" id="sTerm" name="sTerm" value="@Model.STerm" placeholder="Search title...">
-                </div>
-            </div>
-        </div>
-
+        <!-- Genre -->
         <div class="col-md-2">
+            <label for="genreId" class="form-label-modern"><i class="bi bi-tag"></i> Genre</label>
+            <select class="form-select-modern" id="genreId" name="genreId" onchange="this.form.submit()">
+                <option value="0" selected="@(Model.GenreId == 0)">All Genres</option>
+                @foreach (var genre in Model.Genres)
+                {
+                    <option selected="@(Model.GenreId == genre.Id)" value="@genre.Id">@genre.GenreName</option>
+                }
+            </select>
+        </div>
+
+        <!-- Sort By -->
+        <div class="col-md-2">
+            <label for="sortBy" class="form-label-modern"><i class="bi bi-sort-down"></i> Sort By</label>
+            <select class="form-select-modern" id="sortBy" name="sortBy" onchange="this.form.submit()">
+                <option value="name" selected="@(Model.SortBy == "name")">Name (A-Z)</option>
+                <option value="price-asc" selected="@(Model.SortBy == "price-asc")">Price (Low to High)</option>
+                <option value="price-desc" selected="@(Model.SortBy == "price-desc")">Price (High to Low)</option>
+                <option value="updated" selected="@(Model.SortBy == "updated")">Newest First</option>
+                <option value="year-desc" selected="@(Model.SortBy == "year-desc")">Year (Newest)</option>
+            </select>
+        </div>
+
+        <!-- Advanced Filters Button -->
+        <div class="col-md-2">
+            <button type="button" class="btn btn-modern-outline w-100" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+                <i class="bi bi-sliders"></i> Filters
+            </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="col-md-3">
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-modern btn-search flex-fill">
-                    <i class="bi bi-search"></i>
-                </button>
-                <a href="/Home/Index" class="btn btn-modern btn-reset">
-                    <i class="bi bi-arrow-clockwise"></i>
-                </a>
+                <button type="submit" class="btn btn-modern btn-search flex-fill">Apply</button>
+                <a href="/Home/Index" class="btn btn-modern btn-reset" title="Reset Filters"><i class="bi bi-arrow-clockwise"></i></a>
+            </div>
+        </div>
+
+        <!-- Collapsible Advanced Filters -->
+        <div class="collapse w-100 mt-3 @(Model.SelectedMinPrice != null || Model.SelectedMaxPrice != null || Model.SelectedMinYear != null ? "show" : "")" id="advancedFilters">
+            <div class="card card-body bg-light border-0 rounded-4">
+                <div class="row g-3">
+                    <!-- Price Range -->
+                    <div class="col-md-6">
+                        <label class="form-label-modern mb-2">Price Range</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" name="minPrice" placeholder="Min" value="@Model.SelectedMinPrice" min="0">
+                            </div>
+                            <span>-</span>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" name="maxPrice" placeholder="Max" value="@Model.SelectedMaxPrice" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Year Range -->
+                    <div class="col-md-6">
+                        <label class="form-label-modern mb-2">Release Year</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="number" class="form-control form-control-sm" name="minYear" placeholder="From Year" value="@Model.SelectedMinYear">
+                            <span>-</span>
+                            <input type="number" class="form-control form-control-sm" name="maxYear" placeholder="To Year" value="@Model.SelectedMaxYear">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
@@ -148,7 +178,18 @@
                                 </div>
                                 <div>
                                     <div class="game-info-label">Price</div>
-                                    <div class="game-price">$@game.Price</div>
+                                    <div class="game-price">
+                                        @if (game.DiscountPercent > 0)
+                                        {
+                                            <span class="text-decoration-line-through text-muted small me-1">$@game.Price</span>
+                                            <span class="text-danger fw-bold">$@((game.Price * (1 - game.DiscountPercent / 100)).ToString("0.00"))</span>
+                                            <span class="badge bg-danger ms-1">-@game.DiscountPercent%</span>
+                                        }
+                                        else
+                                        {
+                                            <span>$@game.Price</span>
+                                        }
+                                    </div>
                                 </div>
                             </div>
 

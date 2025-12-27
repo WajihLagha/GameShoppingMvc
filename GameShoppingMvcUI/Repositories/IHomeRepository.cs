@@ -3,6 +3,6 @@
     public interface IHomeRepository
     {
         Task<IEnumerable<Genre>> GetGenres();
-        Task<GameListVm> GetGames(string sTerm = "", int genreId = 0, double? maxPrice = null, int page = 1);
+        Task<GameListVm> GetGames(string sTerm = "", int genreId = 0, double? minPrice = null, double? maxPrice = null, int? minYear = null, int? maxYear = null, string sortBy = "name", int page = 1);
     }
 }
