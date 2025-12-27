@@ -51,6 +51,22 @@
                                     <span style="color: #2d3748; font-weight: 700;">@ViewBag.OrderEmail</span>
                                 </div>
                             }
+                            @if (ViewBag.ReservationDate != null && ViewBag.ReservationTime != null)
+                            {
+                                <hr style="margin: 0.5rem 0; border-color: #e2e8f0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #718096; font-weight: 600;">
+                                        <i class="bi bi-calendar-check"></i> Reservation Date
+                                    </span>
+                                    <span style="color: #2d3748; font-weight: 700;">@ViewBag.ReservationDate</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #718096; font-weight: 600;">
+                                        <i class="bi bi-clock"></i> Time Slot
+                                    </span>
+                                    <span style="color: #2d3748; font-weight: 700;">@ViewBag.ReservationTime</span>
+                                </div>
+                            }
                         </div>
                     </div>
 

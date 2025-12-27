@@ -19,6 +19,9 @@ namespace GameShoppingMvcUI.Data
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<Stock> Stocks { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Pack> Packs { get; set; }
+        public DbSet<PackGame> PackGames { get; set; }
 
     }
 }
