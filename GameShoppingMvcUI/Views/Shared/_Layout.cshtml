@@ -29,10 +29,18 @@
                     </li>
                     @if (User.IsInRole("Admin"))
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Admin/Index">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                 <i class="bi bi-gear-fill"></i> Admin
                             </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/Admin/Index">
+                                    <i class="bi bi-joystick"></i> Manage Games
+                                </a>
+                                <a class="dropdown-item" href="/AdminPack/Index">
+                                    <i class="bi bi-box-seam"></i> Manage Packs
+                                </a>
+                            </div>
                         </li>
                     }
 

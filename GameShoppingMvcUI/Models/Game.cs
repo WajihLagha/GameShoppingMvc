@@ -13,6 +13,13 @@ namespace GameShoppingMvcUI.Models
         public string? GameName { get; set; }
         [Required]
         public double Price { get; set; }
+        
+        [Range(0, 100)]
+        public double DiscountPercent { get; set; } = 0;
+        
+        [NotMapped]
+        public double FinalPrice => Price * (1 - DiscountPercent / 100);
+        
         [Required]
         [MaxLength(45)]
         public string? Publisher { get; set; }
